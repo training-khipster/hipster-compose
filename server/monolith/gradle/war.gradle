@@ -1,7 +1,7 @@
 apply plugin: "war"
 
 bootWar {
-    mainClass = "training.hipster.compose.ServerApp"
+    mainClass = "server.ServerApp"
     includes = ["WEB-INF/**", "META-INF/**"]
 }
 

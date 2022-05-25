@@ -30,7 +30,19 @@ management:
       base-path: /management
       exposure:
         include:
-          ['configprops', 'env', 'health', 'info', 'jhimetrics', 'jhiopenapigroups', 'logfile', 'loggers', 'prometheus', 'threaddump']
+          [
+            'configprops',
+            'env',
+            'health',
+            'info',
+            'jhimetrics',
+            'jhiopenapigroups',
+            'logfile',
+            'loggers',
+            'prometheus',
+            'threaddump',
+            'liquibase',
+          ]
   endpoint:
     health:
       show-details: when_authorized
@@ -41,7 +53,7 @@ management:
         liveness:
           include: livenessState
         readiness:
-          include: readinessState
+          include: readinessState,db
     jhimetrics:
       enabled: true
   info:
@@ -76,10 +88,6 @@ management:
         request:
           autotime:
             enabled: true
-
-mongock:
-  migration-scan-package:
-    - training.hipster.compose.config.dbmigrations
 
 spring:
   application:

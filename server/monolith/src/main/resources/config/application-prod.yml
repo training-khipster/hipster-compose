@@ -17,7 +17,7 @@ logging:
   level:
     ROOT: INFO
     tech.jhipster: INFO
-    training.hipster.compose: INFO
+    server: INFO
 
 management:
   metrics:
@@ -31,14 +31,18 @@ spring:
       enabled: false
     livereload:
       enabled: false
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/?waitQueueMultiple=1000
-      database: server
+  # Replace by 'prod, faker' to add the faker context and have sample data loaded in production
+  liquibase:
+    contexts: prod
+    url: jdbc:postgresql://localhost:5432/server
   mail:
     host: localhost
     port: 25
     username:
+    password:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/server
+    username: server
     password:
   thymeleaf:
     cache: true
@@ -102,7 +106,7 @@ jhipster:
         # - In the JHipster Registry (which includes a Spring Cloud Config server)
         # - In a separate `application-prod.yml` file, in the same folder as your executable JAR file
         # - In the `JHIPSTER_SECURITY_AUTHENTICATION_JWT_BASE64_SECRET` environment variable
-        base64-secret: ZmFhN2Y1NWE1M2I3NDNkYmE4MTA1YWI0NzBhNDU2NTliYzUyNDdiNWYyNzg2YjlhNmIxYmIxZjUxYzk1MDc1ZmRkMTA3ZjgzOThlNGY4MTdkYTEwMjcwZDY1ODMyMWExYmViNjU5MWQ0ZjZlNDE3Y2M4NmEwZTdiNDE0ZjVmNGM=
+        base64-secret: ODgwZjVjNThjMTc5YTI0ZGNjNzhkMDE3YmFmODQyYjU3ZjYyNWU0MjBjMDNiMjE4OGIzODg4NGNhMWQ2Zjc0Zjk0ODgzOWNlNGE3M2ZkN2VmMTJjMGNmNzFlM2I4YjQxNTE3Y2UyY2M0YmFhYWY4NDUxNGFiMGU5YWQ1MTBjMzE=
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
         token-validity-in-seconds-for-remember-me: 2592000

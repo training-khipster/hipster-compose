@@ -1,7 +1,7 @@
 {
   "generator-jhipster-kotlin:1.15.0": {
     "promptValues": {
-      "packageName": "training.hipster.compose"
+      "packageName": "server"
     }
   },
   "generator-jhipster:7.8.1": {

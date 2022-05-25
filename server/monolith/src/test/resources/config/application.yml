@@ -13,28 +13,29 @@
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
 
-mongock:
-  migration-scan-package:
-    - training.hipster.compose.config.dbmigrations
-  mongo-db:
-    read-concern: local
-    write-concern:
-      journal: false
-
 spring:
+  profiles:
+    # Uncomment the following line to enable tests against production database type rather than H2, using Testcontainers
+    #active: testcontainers
   application:
     name: server
 
   jackson:
     serialization:
       write-durations-as-timestamps: false
-  data:
+  liquibase:
+    contexts: test
+    url: jdbc:h2:mem:server;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
   mail:
     host: localhost
   main:
     allow-bean-definition-overriding: true
   messages:
     basename: i18n/messages
+  r2dbc:
+    url: r2dbc:h2:mem:///server;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: r2dbc
+    password:
   task:
     execution:
       thread-name-prefix: server-task-
@@ -76,7 +77,7 @@ jhipster:
     authentication:
       jwt:
         # This token must be encoded using Base64 (you can type `echo 'secret-key'|base64` on your command line)
-        base64-secret: ZmFhN2Y1NWE1M2I3NDNkYmE4MTA1YWI0NzBhNDU2NTliYzUyNDdiNWYyNzg2YjlhNmIxYmIxZjUxYzk1MDc1ZmRkMTA3ZjgzOThlNGY4MTdkYTEwMjcwZDY1ODMyMWExYmViNjU5MWQ0ZjZlNDE3Y2M4NmEwZTdiNDE0ZjVmNGM=
+        base64-secret: ODgwZjVjNThjMTc5YTI0ZGNjNzhkMDE3YmFmODQyYjU3ZjYyNWU0MjBjMDNiMjE4OGIzODg4NGNhMWQ2Zjc0Zjk0ODgzOWNlNGE3M2ZkN2VmMTJjMGNmNzFlM2I4YjQxNTE3Y2UyY2M0YmFhYWY4NDUxNGFiMGU5YWQ1MTBjMzE=
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
 # ===================================================================

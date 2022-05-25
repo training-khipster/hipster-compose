@@ -5,6 +5,7 @@ buildscript {
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_version}"
         classpath "org.jetbrains.kotlin:kotlin-allopen:${kotlin_version}"
+        classpath "org.jetbrains.kotlin:kotlin-noarg:${kotlin_version}"
         classpath "org.jlleitschuh.gradle:ktlint-gradle:10.2.1"
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:${detekt_version}"
         //jhipster-needle-gradle-buildscript-dependency - JHipster will add additional gradle build script plugins here
@@ -26,7 +27,7 @@ plugins {
     //jhipster-needle-gradle-plugins - JHipster will add additional gradle plugins here
 }
 
-group = "training.hipster.compose"
+group = "server"
 version = "0.0.1-SNAPSHOT"
 
 description = ""
@@ -86,7 +87,7 @@ eclipse {
 defaultTasks "bootRun"
 
 springBoot {
-    mainClass = "training.hipster.compose.ServerApp"
+    mainClass = "server.ServerApp"
 }
 
 test {
@@ -118,11 +119,13 @@ task integrationTest(type: Test) {
     description = "Execute integration tests."
     group = "verification"
     include "**/*IT*", "**/*IntTest*"
-    exclude "**/*CucumberIT*"
     testLogging {
         events 'FAILED', 'SKIPPED'
     }
     jvmArgs += '-Djava.security.egd=file:/dev/./urandom -Xmx256m'
+    if (project.hasProperty('testcontainers')) {
+        environment 'SPRING_PROFILES_ACTIVE', 'testcontainers'
+    }
 
     // uncomment if the tests reports are not generated
     // see https://github.com/jhipster/generator-jhipster/pull/2771 and https://github.com/jhipster/generator-jhipster/pull/4484
@@ -136,31 +139,6 @@ task integrationTest(type: Test) {
     }
 }
 
-task consoleLauncherTest(type: JavaExec) {
-    dependsOn(testClasses)
-    String cucumberReportsDir = file("$buildDir/reports/tests")
-    outputs.dir(reportsDir)
-    classpath = sourceSets["test"].runtimeClasspath
-    main = "org.junit.platform.console.ConsoleLauncher"
-    args("--scan-classpath")
-    args("--include-engine", "cucumber")
-    args("--reports-dir", cucumberReportsDir)
-}
-
-task cucumberTest(type: Test) {
-    dependsOn(consoleLauncherTest)
-    description = "Execute cucumber BDD tests."
-    group = "verification"
-    include "**/*CucumberIT*"
-
-    // uncomment if the tests reports are not generated
-    // see https://github.com/jhipster/generator-jhipster/pull/2771 and https://github.com/jhipster/generator-jhipster/pull/4484
-    // ignoreFailures true
-    reports.html.enabled = false
-}
-
-check.dependsOn cucumberTest
-
 check.dependsOn integrationTest
 task testReport(type: TestReport) {
     destinationDir = file("$buildDir/reports/tests")
@@ -170,11 +148,6 @@ task testReport(type: TestReport) {
 task integrationTestReport(type: TestReport) {
     destinationDir = file("$buildDir/reports/tests")
     reportOn integrationTest
-}
-
-task cucumberTestReport(type: TestReport) {
-    destinationDir = file("$buildDir/reports/tests")
-    reportOn cucumberTest
 }
 
 
@@ -227,17 +200,22 @@ dependencies {
     implementation "io.micrometer:micrometer-registry-prometheus"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-hppc"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+    implementation "com.fasterxml.jackson.module:jackson-module-jaxb-annotations"
     implementation "com.fasterxml.jackson.core:jackson-annotations"
     implementation "com.fasterxml.jackson.core:jackson-databind"
+    implementation "org.hibernate:hibernate-core"
+    implementation "com.zaxxer:HikariCP"
+    implementation "commons-beanutils:commons-beanutils:${commonsBeanutilsVersion}"
     implementation "org.apache.commons:commons-lang3"
     implementation "javax.transaction:javax.transaction-api"
+    implementation "org.hibernate.validator:hibernate-validator"
+    implementation "org.liquibase:liquibase-core"
     implementation "org.springframework.boot:spring-boot-loader-tools"
     implementation "org.springframework.boot:spring-boot-starter-mail"
     implementation "org.springframework.boot:spring-boot-starter-logging"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation "org.springframework.boot:spring-boot-starter-data-mongodb-reactive"
-    testImplementation "org.testcontainers:junit-jupiter"
-    testImplementation "org.testcontainers:testcontainers"
+    implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
+    testImplementation "org.testcontainers:postgresql"
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation ("org.springframework.boot:spring-boot-starter-webflux") {
         exclude module: "spring-boot-starter-tomcat"
@@ -257,26 +235,14 @@ dependencies {
         implementation "io.jsonwebtoken:jjwt-impl"
         implementation "io.jsonwebtoken:jjwt-jackson"
     }
-    implementation "io.mongock:mongock-springboot"
-    implementation "io.mongock:mongodb-springdata-v3-driver"
-    testImplementation "org.testcontainers:mongodb"
-    // Mongock doesn't support reactive yet, so this dependency is necessary.
-    // See https://github.com/jhipster/generator-jhipster/pull/12536#issuecomment-696683592 for more information.
-    implementation "org.springframework.boot:spring-boot-starter-data-mongodb"
-
-    // Mongo db driver was excluded from starter, adding manually
-    implementation "org.mongodb:mongodb-driver-reactivestreams"
-    // Mongo db driver was excluded from starter, adding manually
-    implementation "org.mongodb:mongodb-driver-sync"
     implementation ("org.springdoc:springdoc-openapi-webmvc-core")
+    implementation "org.postgresql:postgresql"
+    implementation "io.r2dbc:r2dbc-postgresql"
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    annotationProcessor "org.hibernate:hibernate-jpamodelgen:${hibernateVersion}"
+    annotationProcessor "org.glassfish.jaxb:jaxb-runtime:${jaxbRuntimeVersion}"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"
-    testImplementation "org.junit.platform:junit-platform-console"
-    testImplementation "io.cucumber:cucumber-junit-platform-engine"
-    testImplementation "io.cucumber:cucumber-java"
-    testImplementation "io.cucumber:cucumber-spring"
-    testImplementation "org.testng:testng"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework.security:spring-security-test"
     testImplementation "org.springframework.boot:spring-boot-test"
@@ -284,6 +250,9 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:${junitPlatformLauncherVersion}'
     testImplementation "com.tngtech.archunit:archunit-junit5-api:${archunitJunit5Version}"
     testRuntimeOnly "com.tngtech.archunit:archunit-junit5-engine:${archunitJunit5Version}"
+    testImplementation "com.h2database:h2"
+    testImplementation "io.r2dbc:r2dbc-h2"
+    implementation "io.r2dbc:r2dbc-h2"
     developmentOnly "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
     //jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
 }

@@ -15,9 +15,9 @@
     "clientPackageManager": "npm",
     "clientTheme": "none",
     "clientThemeVariant": "",
-    "creationTimestamp": 1653435598606,
-    "databaseType": "mongodb",
-    "devDatabaseType": "mongodb",
+    "creationTimestamp": 1653436311086,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Memory",
     "dtoSuffix": "DTO",
     "enableGradleEnterprise": false,
     "enableHibernateCache": false,
@@ -26,7 +26,7 @@
     "entitySuffix": "",
     "jhiPrefix": "jhi",
     "jhipsterVersion": "7.8.1",
-    "jwtSecretKey": "ZmFhN2Y1NWE1M2I3NDNkYmE4MTA1YWI0NzBhNDU2NTliYzUyNDdiNWYyNzg2YjlhNmIxYmIxZjUxYzk1MDc1ZmRkMTA3ZjgzOThlNGY4MTdkYTEwMjcwZDY1ODMyMWExYmViNjU5MWQ0ZjZlNDE3Y2M4NmEwZTdiNDE0ZjVmNGM=",
+    "jwtSecretKey": "ODgwZjVjNThjMTc5YTI0ZGNjNzhkMDE3YmFmODQyYjU3ZjYyNWU0MjBjMDNiMjE4OGIzODg4NGNhMWQ2Zjc0Zjk0ODgzOWNlNGE3M2ZkN2VmMTJjMGNmNzFlM2I4YjQxNTE3Y2UyY2M0YmFhYWY4NDUxNGFiMGU5YWQ1MTBjMzE=",
     "languages": ["fr", "en", "es"],
     "messageBroker": false,
     "monorepository": true,
@@ -37,9 +37,9 @@
         "version": "1.15.0"
       }
     ],
-    "packageName": "training.hipster.compose",
+    "packageName": "server",
     "pages": [],
-    "prodDatabaseType": "mongodb",
+    "prodDatabaseType": "postgresql",
     "reactive": true,
     "searchEngine": false,
     "serverPort": "8080",
@@ -50,7 +50,7 @@
     "skipCommitHook": true,
     "skipFakeData": false,
     "skipUserManagement": false,
-    "testFrameworks": ["cucumber"],
+    "testFrameworks": [],
     "websocket": false,
     "withAdminUi": true
   }
